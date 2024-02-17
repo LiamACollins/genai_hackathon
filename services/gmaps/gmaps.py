@@ -51,3 +51,20 @@ def get_aggregate_text_description(
     prompt = GET_GUIDE_PROMPT.format(current_place_name, landmark_names)
 
     return text_gen.get_mistral_response(prompt)
+
+def reverse_geocode(lat, lng: float):
+    gmaps = __get_gmaps_client_instance()
+
+    region = gmaps.reverse_geocode((lat, lng))
+    # Parse the results
+
+    for component in region[0]['address_components']:
+        if 'country' in component['types']:
+            country = component['long_name']
+        elif 'administrative_area_level_1' in component['types']:
+            state = component['long_name']
+        elif 'locality' in component['types']:
+            city = component['long_name']
+
+    region_string = f'Country: {country}, State: {state}, City: {city}'
+    return region_string
