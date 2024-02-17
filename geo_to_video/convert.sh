@@ -1,0 +1,1 @@
+ffmpeg -i thriller_vibrant_independence.mp4 -c:v libx264 -preset slow -crf 20 -c:a aac -b:a 160k -vf format=yuv420p -movflags +faststart converted_thriller_vibrant_independence.mp4
