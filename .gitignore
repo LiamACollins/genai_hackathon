@@ -2,9 +2,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.wav
 
 # C extensions
 *.so
+# png:
+*.png
 
 # Distribution / packaging
 .Python
