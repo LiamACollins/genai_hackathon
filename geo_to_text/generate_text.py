@@ -33,8 +33,7 @@ def customized_text_generation(story_option, image_option, geo_string):
         "stream": False,
         "temperature": 1.5,
     }
-    # llama : 8w67ov0q
-    # mistra : 6wglrxv3
+
     # Call model endpoint
     res = requests.post(
         f"https://model-6wglrxv3.api.baseten.co/production/predict",
