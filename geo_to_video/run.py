@@ -51,7 +51,7 @@ for s in attractions:
 
 def get_prompt(string):
 # TODO prompt engineering here.
-    return f"{string}, as tourist, suitable for display on the mobile device, historical fact."
+    return f"{string}, as tourist, suitable for display on the mobile device, with historical fact."
 
 
 BASE64_PREAMBLE = "data:image/png;base64,"
@@ -59,27 +59,6 @@ BASE64_PREAMBLE = "data:image/png;base64,"
 def b64_to_pil(b64_str):
     return Image.open(BytesIO(base64.b64decode(b64_str.replace(BASE64_PREAMBLE, ""))))
 
-s = attraction_strings[1]
-res = requests.post(
-    "https://model-rwnp8z23.api.baseten.co/production/predict",
-    headers={"Authorization": f"Api-Key {API_KEY}"},
-    json={'prompt': get_prompt(s), 'use_refiner': True},
-)
-
-res = res.json()
-output = res.get("data")
-# print(res)
-
-
-# import sys
-# sys.exit()
-# Convert the base64 model output to an image
-img = b64_to_pil(output)
-img.save("output_image.png")
-
-
-model_id = "owpj019w"
-baseten_api_key = os.environ["BASETEN_API_KEY"]
 
 def base64_to_mp4(base64_string, output_file_path):
     binary_data = base64.b64decode(base64_string)
@@ -100,28 +79,44 @@ def image_to_base64(image_path: str):
         base64_string = base64_data.decode("utf-8")
 
     return base64_string
-data = {
-  "image": image_to_base64("./output_image.png"),
-  "num_frames": 25,
-  "decoding_t": 5,
-  "duration": 4
-}
 
-# Call model endpoint
-res = requests.post(
-    f"https://model-{model_id}.api.baseten.co/production/predict",
-    headers={"Authorization": f"Api-Key {baseten_api_key}"},
-    json=data
-)
+for s in attraction_strings:
 
-# Get the output of the model
-# print(res)
-res = res.json()
+    res = requests.post(
+        "https://model-rwnp8z23.api.baseten.co/production/predict",
+        headers={"Authorization": f"Api-Key {API_KEY}"},
+        json={'prompt': get_prompt(s), 'use_refiner': True},
+    )
 
-base64_output = res.get("output")
+    res = res.json()
+    #b64 image
+    b64_img_output = res.get("data")
 
-# Convert the base64 output to an mp4 video
-base64_to_mp4(base64_output, "stable-video-diffusion-output.mp4")
+    img = b64_to_pil(b64_img_output)
+    img.save("output_image.png")
 
-# with open('attraction_names.txt', 'w') as f:
-#     f.write(s + '\n')
+    data = {
+    "image": b64_img_output,
+    "num_frames": 25,
+    "decoding_t": 5,
+    "duration": 4
+    }
+
+    # Call model endpoint
+    res = requests.post(
+        f"https://model-owpj019w.api.baseten.co/production/predict",
+        headers={"Authorization": f"Api-Key {API_KEY}"},
+        json=data
+    )
+
+    # Get the output of the model
+    # print(res)
+    res = res.json()
+
+    base64_output = res.get("output")
+
+    # Convert the base64 output to an mp4 video
+    base64_to_mp4(base64_output, "stable-video-diffusion-output.mp4")
+
+    with open('attraction_names.txt', 'w') as f:
+        f.write(s + '\n')
