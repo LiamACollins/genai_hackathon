@@ -1,5 +1,5 @@
 import streamlit as st
-from pages import user_preference_input, walking_tour_stop1  # Import the pages
+import json
 
 st.set_page_config(
    page_title="Ex-stream-ly Cool App",
