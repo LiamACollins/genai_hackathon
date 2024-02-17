@@ -1,4 +1,7 @@
 import streamlit as st
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Define the options for the dropdown
 story_options = ['Historical facts', 'Political stories', 'Love stories', 'Mystery Thriller', 'Other']
