@@ -9,7 +9,7 @@ def convert_mp4_to_gif(input_file, output_file):
     cmd = [
         'ffmpeg',
         '-i', input_file,  # Input file
-        '-vf', 'fps=10,scale=320:-1',  # Frame rate and scale options
+        '-filter_complex', '[0:v] fps=10,scale=480:-1:flags=lanczos,split [a][b];[a] palettegen [p];[b][p] paletteuse',
         '-f', 'gif',  # Output format
         output_file  # Output file
     ]
@@ -22,7 +22,7 @@ def convert_mp4_to_gif(input_file, output_file):
         print(f"Error during conversion: {e}")
 
 # Example usage
-input_mp4 = 'converted_thriller_vibrant_independence.mp4'  # Replace with the path to your MP4 file
-output_gif = input_mp4[:-4] + '.gif'  # Replace with the desired output GIF file path
+for input_mp4 in ['converted_thriller_vibrant_independence.mp4', 'converted_thriller_vibrant_liberty_bell.mp4', 'converted_hist_kodak_independence.mp4', 'converted_hist_kodak_bell.mp4']:
+    output_gif = input_mp4[:-4] + '.gif'  # Replace with the desired output GIF file path
 
-convert_mp4_to_gif(input_mp4, output_gif)
+    convert_mp4_to_gif(input_mp4, output_gif)
