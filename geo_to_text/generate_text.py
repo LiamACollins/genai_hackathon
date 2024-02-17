@@ -15,14 +15,14 @@ def remove_html_and_inst(text):
 
 def get_prompt(geo_string, user_string):
 
-    return f"Please write a text that briefly introduces {geo_string} to someone who likes {user_string}. The person to be introduced is a tourist and is taking a walk in the area who happens to be nofitied by the app to visit {geo_string}. Do not use excessive expressions."
+    return f"Please write a short text that briefly introduces {geo_string} to someone who is a tourist."
 
 def customized_text_generation(story_option, image_option, geo_string):
-    user_string = story_option
-    prompt = get_prompt(geo_string, user_string)
+
+    prompt = get_prompt(geo_string, None)
     data = {
         "prompt": prompt,
-        "max_new_tokens": 2048,
+        "max_new_tokens": 4096,
         "stream": False,
     }
     # llama : 8w67ov0q
@@ -47,8 +47,8 @@ if __name__ == "__main__":
 
     cache['hist_kodak_bell'] = customized_text_generation("Historical facts", "Realistic old school photography shot on a kodak camera", "Liberty bell, Philadelphia")
     cache['hist_kodak_independence'] = customized_text_generation("Historical facts", "Realistic old school photography shot on a kodak camera", "Independence hall, Philadelphia")
-    cache['thriller_vibrant_bell'] = customized_text_generation('Mystery Thriller', 'Vibrant and animated', 'Liberty bell, Philadelphia')
-    cache['thriller_vibrant_independence'] = customized_text_generation('Mystery Thriller', 'Vibrant and animated', 'Independence hall, Philadelphia')
+    cache['thriller_vibrant_bell'] = cache['hist_kodak_bell']
+    cache['thriller_vibrant_independence'] = cache['hist_kodak_independence']
 
 
     
