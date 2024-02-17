@@ -3,6 +3,7 @@ from io import BytesIO
 from PIL import Image
 import os
 import uuid
+import subprocess
 
 API_KEY = os.environ["BASETEN_API_KEY"]
 
@@ -75,7 +76,11 @@ def generate_video(geo_string, user_string, file_name_prefix = "output"):
     base64_output = res.get("output")
 
     # Convert the base64 output to an mp4 video
-    base64_to_mp4(base64_output, file_name_prefix + "_video.mp4")
+    filename = file_name_prefix + "_video.mp4"
+    base64_to_mp4(base64_output, filename)
+    convert_mp4_to_gif(filename, filename[:-4] + '.gif')
+
+
 
 def customized_video_generation(story_option, image_option, geo_string):
     # if story_option == "Historical facts" and image_option == 'Realistic old school photography shot on a kodak camera':
@@ -87,10 +92,31 @@ def customized_video_generation(story_option, image_option, geo_string):
 
 
 
+
+def convert_mp4_to_gif(input_file, output_file):
+    # Command to convert MP4 to GIF using FFmpeg
+    # This example uses a simple conversion process.
+    # You may want to add additional options to optimize the size and quality of the output GIF.
+    cmd = [
+        'ffmpeg',
+        '-i', input_file,  # Input file
+        '-vf', 'fps=10,scale=320:-1',  # Frame rate and scale options
+        '-f', 'gif',  # Output format
+        output_file  # Output file
+    ]
+    
+    try:
+        # Execute the FFmpeg command
+        subprocess.run(cmd, check=True)
+        print(f"Conversion successful: {output_file}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error during conversion: {e}")
+
+
 if __name__ == "__main__":
     
     # customized_video_generation('Historical facts', 'Realistic old school photography shot on a kodak camera', 'Liberty bell, Philadelphia')
-    customized_video_generation('Historical facts', 'Realistic old school photography shot on a kodak camera', 'Independence hall')
+    # customized_video_generation('Historical facts', 'Realistic old school photography shot on a kodak camera', 'Independence hall')
 
     # customized_video_generation('Mystery Thriller', 'Vibrant and animated', 'Liberty bell, Philadelphia')
     # customized_video_generation('Mystery Thriller', 'Vibrant and animated', 'Independence hall, Philadelphia')
@@ -103,3 +129,4 @@ if __name__ == "__main__":
 
     # poetry run streamlit run home.py
 
+    pass
