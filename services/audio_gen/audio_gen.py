@@ -1,7 +1,7 @@
 import requests
 import os
 import base64
-from services import get_baseten_url
+from services import get_baseten_url, get_baseten_api_key
 
 AUDIO_GEN_PROMPT = """
 Produce high-quality audio content based on the engaging descriptions of the city's landmarks and attractions.
@@ -13,7 +13,10 @@ Read the following descriptions:
 
 MELODY_GEN_MODEL_ID = os.environ["MELODY_GEN_MODEL_ID"]
 
-def generate_audio_with_prompt(description_prompt: str, length_in_seconds: int, output_filename: str):
+def generate_audio_with_prompt(
+        description_prompt: str,
+        length_in_seconds: int,
+        output_filename: str = "audio.wav"):
     prompt = AUDIO_GEN_PROMPT.format(description_prompt)
 
     data = {"prompts": [prompt], "duration": length_in_seconds}
@@ -21,7 +24,7 @@ def generate_audio_with_prompt(description_prompt: str, length_in_seconds: int, 
     
     res = requests.post(
         url=url,
-        headers={"Authorization": "Api-Key " + os.environ["BASETEN_API_KEY"]},
+        headers={"Authorization": "Api-Key " + get_baseten_api_key()},
         json=data,
     )
     # Print the output of the model
@@ -30,5 +33,5 @@ def generate_audio_with_prompt(description_prompt: str, length_in_seconds: int, 
 
     # Convert the output base64 strings to audio files
     for idx, clip in enumerate(output):
-        with open(f"{output_filename}.wav", "wb") as f:
+        with open(output_filename, "wb") as f:
             f.write(base64.b64decode(clip))
